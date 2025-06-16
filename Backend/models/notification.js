@@ -18,8 +18,15 @@ const NotificationSchema = new mongoose.Schema({
       'user_blocked',
       'user_unblocked',
       'system_announcement',
-      'application_received', // New: Notify job poster of new application
-      'proposal_received', // New: Notify job poster of new proposal
+      'application_received',
+      'proposal_received',
+      'contract_offered',
+      'contract_status',
+      'milestone_completed',
+      'payment_received',
+      'message_received',
+      'review_received',
+      'dispute_raised',
     ],
     required: [true, 'Notification type is required'],
   },
@@ -42,6 +49,22 @@ const NotificationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Proposal',
   },
+  contractId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Contract',
+  },
+  paymentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Payment',
+  },
+  messageId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Message',
+  },
+  disputeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Dispute',
+  },
   status: {
     type: String,
     enum: ['unread', 'read'],
@@ -59,10 +82,9 @@ const NotificationSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Index for efficient querying
 NotificationSchema.index({ userId: 1, status: 1 });
 
-// Update updatedAt on save
+// Update `updatedAt` timestamp on save
 NotificationSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
