@@ -1,8 +1,8 @@
 import express from 'express';
 import authMiddleware from '../middleware/authMiddleware.js';
 import {
-  addReview,
-  getReviewsByUser,
+  createReview,
+  getUserReviews,
   updateReview,
   deleteReview,
 } from '../controller/reviewController.js';
@@ -12,10 +12,10 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.route('/')
-  .post(addReview);
+  .post(createReview);
 
 router.route('/user/:userId')
-  .get(getReviewsByUser);
+  .get(getUserReviews);
 
 router.route('/:id')
   .patch(updateReview)

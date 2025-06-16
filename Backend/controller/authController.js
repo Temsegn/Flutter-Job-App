@@ -3,7 +3,7 @@ import User from '../models/user.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail } from '../mailtrap.js'; // Adjust path as needed
+import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendPasswordResetSuccessEmail } from '../mailtrap/sendEmail.js'; // Adjust path as needed
 import generateToken from '../utils/generateToken.js';
 import generateCode from '../utils/generateCode.js';
 
@@ -201,7 +201,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
   user.resetPasswordExpiresAt = undefined;
   await user.save();
 
-  await sendResetSuccessEmail(user.email);
+  await sendPasswordResetSuccessEmail(user.email);
   res.status(200).json({ msg: 'Password reset successful' });
 });
 
