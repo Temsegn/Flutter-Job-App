@@ -1,38 +1,40 @@
-import mongoose, { mongo } from 'mongoose';
- 
+import mongoose from 'mongoose';
 
 const bookmarkSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    },
-    job: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Job',
-        required: true,
-    },
-    title: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    imageUrl: {
-        type: String,
-        required: true,
-        default: 'https://example.com/default-bookmark-image.png', // Placeholder URL
-    },
-    company: {
-        type: String,
-        required: true,
-    },
-    location: {
-        type: String,
-        required: true,
-    },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'User ID is required'],
+  },
+  job: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Job',
+    required: [true, 'Job ID is required'],
+  },
+  title: {
+    type: String,
+    required: [true, 'Title is required'],
+    trim: true,
+  },
+  imageUrl: {
+    type: String,
+    required: [true, 'Image URL is required'],
+    default: 'https://example.com/default-bookmark-image.png',
+  },
+  company: {
+    type: String,
+    required: [true, 'Company is required'],
+    trim: true,
+  },
+  location: {
+    type: String,
+    required: [true, 'Location is required'],
+    trim: true,
+  },
 }, {
-    timestamps: true, // Automatically manage createdAt and updatedAt fields
+  timestamps: true,
 });
 
-const Bookmark = mongoose.model('Bookmark', bookmarkSchema);
-export default Bookmark;
+bookmarkSchema.index({ user: 1, job: 1 });
+
+export default mongoose.model('Bookmark', bookmarkSchema);
