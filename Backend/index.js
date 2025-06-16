@@ -7,6 +7,9 @@ import connectDB from './db/db.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
 import jobRoutes from './routes/job.js';
+import bookmarkRoutes from './routes/bookmark.js';
+
+
 const port=process.env.PORT || 3000;
 dotenv.config();
 
@@ -17,6 +20,7 @@ app.use(cookieParser())
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/job', jobRoutes);
+app.use('/api/bookmarks', bookmarkRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');

@@ -8,7 +8,17 @@ import {
   unblockUser,
   deleteUser,
   getJobStats,
-  getSystemStats
+  getSystemStats,
+  createJob,
+  updateJob,
+  deleteJob,
+  getAllJobs,
+  getSingleJob,
+  searchJobs,
+  getJobApplications,
+  updateApplicationStatus,
+  getJobProposals,
+  updateProposalStatus,
 } from '../controller/adminController.js';
 
 const router = express.Router();
@@ -16,25 +26,52 @@ const router = express.Router();
 // All routes protected by auth + admin check
 router.use(authMiddleware, verifyAdmin);
 
-// Get all users
-router.get('/users', getAllUsers);
+// User Management Routes
+router.route('/users')
+  .get(getAllUsers); // Get all users
 
-// Get a single user by ID
-router.get('/users/:id', getSingleUser);
+router.route('/users/:id')
+  .get(getSingleUser) // Get a single user by ID
+  .delete(deleteUser); // Delete a user by ID
 
-// Block a user
-router.patch('/block/:id', blockUser);
+router.route('/block/:id')
+  .patch(blockUser); // Block a user by ID
 
-// Unblock a user
-router.patch('/unblock/:id', unblockUser);
+router.route('/unblock/:id')
+  .patch(unblockUser); // Unblock a user by ID
 
-// Delete a user
-router.delete('/users/:id', deleteUser);
+// Job Management Routes
+router.route('/jobs')
+  .get(getAllJobs) // Get all jobs
+  .post(createJob); // Create a new job
 
-// View job stats (posted jobs, applicants, etc.)
-router.get('/job-stats', getJobStats);
+router.route('/jobs/search')
+  .get(searchJobs); // Search and filter jobs (e.g., ?q=keyword&category=dev)
 
-// View system-wide stats (user count, job count, etc.)
-router.get('/system-stats', getSystemStats);
+router.route('/jobs/:id')
+  .get(getSingleJob) // Get a single job by ID
+  .patch(updateJob) // Update a job by ID
+  .delete(deleteJob); // Delete a job by ID
+
+// Job Application Management Routes
+router.route('/jobs/:id/applications')
+  .get(getJobApplications); // Get all applications for a job
+
+router.route('/applications/:applicationId/status')
+  .patch(updateApplicationStatus); // Update application status by application ID
+
+// Job Proposal Management Routes
+router.route('/jobs/:id/proposals')
+  .get(getJobProposals); // Get all proposals for a job
+
+router.route('/proposals/:proposalId/status')
+  .patch(updateProposalStatus); // Update proposal status by proposal ID
+
+// Statistics Routes
+router.route('/job-stats')
+  .get(getJobStats); // View job-related statistics (posted jobs, applicants, etc.)
+
+router.route('/system-stats')
+  .get(getSystemStats); // View system-wide statistics (user count, job count, etc.)
 
 export default router;
