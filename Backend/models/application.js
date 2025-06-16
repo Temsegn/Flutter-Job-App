@@ -29,7 +29,11 @@ const ApplicationSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+}, {
+  timestamps: true,
 });
+
+ApplicationSchema.index({ jobId: 1, userId: 1 });
 
 // Update `updatedAt` timestamp on save
 ApplicationSchema.pre('save', function (next) {
