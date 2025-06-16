@@ -39,7 +39,11 @@ const ProposalSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+}, {
+  timestamps: true,
 });
+
+ProposalSchema.index({ jobId: 1, userId: 1 });
 
 // Update `updatedAt` timestamp on save
 ProposalSchema.pre('save', function (next) {
