@@ -18,6 +18,7 @@ import {
   blockUser,
   unblockUser,
   deleteUser,
+  updateProfilePicture
 } from '../controller/userController.js';
 
 const router = express.Router();
@@ -35,7 +36,8 @@ router.use(authMiddleware);
 router.route('/profile')
   .get(getUserProfile) // Get own profile
   .patch(updateUserProfile); // Update profile (bio, hourlyRate)
-
+router.route('/profile/picture')
+  .patch(updateProfilePicture); // New route for profile picture
 router.route('/portfolio')
   .post(addPortfolio)
   .patch(updatePortfolio)

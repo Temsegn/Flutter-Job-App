@@ -32,9 +32,9 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'agent', 'admin', 'freelancer', 'client'],
+    enum: ['admin', 'freelancer', 'client'],
     required: [true, 'Role is required'],
-    default: 'user',
+    default: 'freelancer',
   },
   skills: {
     type: [String],
@@ -71,14 +71,24 @@ const userSchema = new mongoose.Schema({
     url: { type: String, trim: true },
     imageUrl: { type: String, trim: true },
   }],
+  balance: {
+    type: Number,
+    default: 0,
+    min: [0, 'Balance cannot be negative'],
+  },
+  phoneNumber: {
+    type: String,
+    trim: true,
+    match: [/^\+?\d{10,15}$/, 'Please provide a valid phone number'],
+    default: null,
+  },
+  bankAccount: {
+    type: String,
+    trim: true,
+    default: null,
+  },
 }, {
   timestamps: true,
 });
-
-// Indexes for efficient search
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
-userSchema.index({ skills: 1 });
-userSchema.index({ location: 1 });
-
+ 
 export default mongoose.model('User', userSchema);

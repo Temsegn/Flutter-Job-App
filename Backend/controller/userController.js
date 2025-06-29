@@ -1,7 +1,9 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/user.js';
 import Notification from '../models/notification.js';
-
+import fs from 'fs/promises';
+import path from 'path';
+import { uploadProfilePicture } from '../utils/multerConfig.js';
 // Get all users (admin)
 export const getAllUsers = asyncHandler(async (req, res) => {
   const users = await User.find().select('-password -verificationCode').sort('username');
@@ -262,6 +264,48 @@ export const unblockUser = asyncHandler(async (req, res) => {
   });
 
   res.status(200).json({ msg: 'User unblocked', user });
+});
+   
+export const updateProfilePicture = asyncHandler(async (req, res) => {
+  uploadProfilePicture(req, res, async (err) => {
+    if (err) {
+      console.error('Multer error:', err.message); // Debug
+      res.status(400);
+      throw new Error(err.message || 'File upload failed');
+    }
+
+    console.log('req.file:', req.file); // Debug
+    if (!req.file) {
+      res.status(400);
+      throw new Error('No file uploaded');
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+
+    // Delete old profile picture if it exists and isn’t the default
+    if (user.profilePicture && user.profilePicture !== 'https://example.com/default-profile-picture.png') {
+      const oldPath = path.join(__dirname, '..', '..', user.profilePicture);
+      console.log('Deleting old picture:', oldPath); // Debug
+      try {
+        await fs.unlink(oldPath);
+      } catch (error) {
+        console.error('Failed to delete old profile picture:', error.message);
+      }
+    }
+
+    // Update profile picture path
+    user.profilePicture = `/uploads/profile-pictures/${req.file.filename}`;
+    await user.save();
+
+    res.status(200).json({
+      msg: 'Profile picture updated successfully',
+      profilePicture: user.profilePicture,
+    });
+  });
 });
 
 // Delete user (admin)
